@@ -35,6 +35,11 @@ public class UpdatableTreeModel implements TreeViewModel {
 
 	public UpdatableTreeModel(SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree) {
 		this.selectionModelCellTree = selectionModelCellTree;
+		this.rootDataProvider = new ListDataProvider<UpdatableTreeNode>(new ArrayList<UpdatableTreeNode>());
+	}
+
+	public ListDataProvider<UpdatableTreeNode> getRootDataProvider() {
+		return rootDataProvider;
 	}
 
 	public void add(UpdatableTreeNode parent, UpdatableTreeNode child) {
@@ -66,17 +71,17 @@ public class UpdatableTreeModel implements TreeViewModel {
 				parent.setChildOpen(idx, false, false);
 			if (node != null) {
 				UpdatableTreeNode utn = (UpdatableTreeNode) node.getValue();
-				NodeChildToClose nctc = null;						
+				NodeChildToClose nctc = null;
 				if (nodeToCheck.getParent() == utn) {
-					nctc = new NodeChildToClose();					
+					nctc = new NodeChildToClose();
 					nctc.node = parent;
 					nctc.childIndex = idx;
 					return nctc;
 				} else {
 					if (node.getChildCount() > 0) {
-					nctc = searchTreeNode(node, nodeToCheck);
-					if (nctc != null)
-						return nctc;
+						nctc = searchTreeNode(node, nodeToCheck);
+						if (nctc != null)
+							return nctc;
 					}
 				}
 			}
@@ -93,10 +98,10 @@ public class UpdatableTreeModel implements TreeViewModel {
 		} else {
 			// find open node and close it when last child is to be removed !!!
 			if (objToRemove.getParent().getChildCount() == 1) {
-				NodeChildToClose nctc = searchTreeNode(tree.getRootTreeNode(),objToRemove);
+				NodeChildToClose nctc = searchTreeNode(tree.getRootTreeNode(), objToRemove);
 				if (nctc != null)
 					nctc.node.setChildOpen(nctc.childIndex, false);
-			}		
+			}
 			parent.removeChild(objToRemove);
 			if (parent.getParent() == null) {
 				rootDataProvider.refresh();
@@ -120,7 +125,6 @@ public class UpdatableTreeModel implements TreeViewModel {
 		};
 
 		if (value == null) { // root is not set
-			rootDataProvider = new ListDataProvider<UpdatableTreeNode>(new ArrayList<UpdatableTreeNode>());
 			return new DefaultNodeInfo<UpdatableTreeNode>(rootDataProvider, cell, selectionModelCellTree, null);
 		} else {
 			return new DefaultNodeInfo<UpdatableTreeNode>(((UpdatableTreeNode) value).getDataProvider(), cell, selectionModelCellTree, null);

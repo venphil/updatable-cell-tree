@@ -16,6 +16,8 @@ package com.google.code.tree.client;
  * 
  * */
 
+import java.util.List;
+
 import com.google.gwt.view.client.ListDataProvider;
 
 public abstract class AbstractUpdatableTreeNode implements UpdatableTreeNode {
@@ -23,14 +25,21 @@ public abstract class AbstractUpdatableTreeNode implements UpdatableTreeNode {
 	private ListDataProvider<UpdatableTreeNode> dataProvider;
 	private String label;
 	private UpdatableTreeNode parent = null;
+	private Object obj;
 
 	public AbstractUpdatableTreeNode(String label) {
+		this(label, null);
+	}
+
+	public AbstractUpdatableTreeNode(String label, Object obj) {
 		parent = null;
 		this.label = label;
-		dataProvider = new ListDataProvider<UpdatableTreeNode>();
+		this.obj = obj;
 	}
 
 	public boolean hasChildren() {
+		if (dataProvider == null)
+			return false;
 		return !(dataProvider.getList().isEmpty());
 	}
 
@@ -44,8 +53,10 @@ public abstract class AbstractUpdatableTreeNode implements UpdatableTreeNode {
 	}
 
 	public void removeChild(UpdatableTreeNode child) {
-		for (UpdatableTreeNode sib : child.getDataProvider().getList()) {
-			removeChild(sib);
+		if (child.hasChildren()) {
+			for (UpdatableTreeNode sib : child.getDataProvider().getList()) {
+				removeChild(sib);
+			}
 		}
 		child.setParent(null);
 		dataProvider.getList().remove(child);
@@ -63,7 +74,25 @@ public abstract class AbstractUpdatableTreeNode implements UpdatableTreeNode {
 		return label;
 	}
 
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public Object getObject() {
+		return obj;
+	}
+
+	public void setObject(Object obj) {
+		this.obj = obj;
+	}
+
 	public ListDataProvider<UpdatableTreeNode> getDataProvider() {
+		if (dataProvider == null) {
+			dataProvider = new ListDataProvider<UpdatableTreeNode>();
+			populateTreeNodeList(dataProvider.getList());
+		}
 		return dataProvider;
 	}
+
+	public abstract void populateTreeNodeList(List<UpdatableTreeNode> list);
 }

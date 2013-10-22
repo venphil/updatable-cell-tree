@@ -16,6 +16,8 @@ package com.google.code.tree.client;
  * 
  * */
 
+import java.util.List;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,6 +53,10 @@ public class UpdatableCellTreeTest implements EntryPoint {
 					cnt = parent.getDataProvider().getList().size() + 1;
 				}
 				UpdatableTreeNode child = new AbstractUpdatableTreeNode(label + cnt) {
+					@Override
+					public void populateTreeNodeList(List<UpdatableTreeNode> list) {
+						// add initial nodes if required
+					}
 				};
 				treeModel.add(parent, child);
 			}

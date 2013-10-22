@@ -21,11 +21,11 @@ import com.google.gwt.view.client.ListDataProvider;
 public interface UpdatableTreeNode {
 
 	public boolean hasChildren();
-	
+
 	public int getChildCount();
-	
+
 	public void addChild(UpdatableTreeNode child);
-	
+
 	public void removeChild(UpdatableTreeNode child);
 
 	public UpdatableTreeNode getParent();
