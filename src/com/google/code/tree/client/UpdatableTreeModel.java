@@ -125,7 +125,7 @@ public class UpdatableTreeModel implements TreeViewModel {
 
 	@Override
 	public <T> NodeInfo<?> getNodeInfo(T value) {
-		Cell<UpdatableTreeNode> cell = new CustomEditTextCell();
+		Cell<UpdatableTreeNode> cell = new CustomEditTextCell(inputBoxSize);
 		if (value == null) { // root is not set
 			return new DefaultNodeInfo<UpdatableTreeNode>(rootDataProvider, cell, selectionModelCellTree, valueUpdater);
 		} else {
