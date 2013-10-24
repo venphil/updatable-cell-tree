@@ -18,6 +18,7 @@ package com.google.code.tree.client;
 
 import java.util.List;
 
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,7 +34,12 @@ public class UpdatableCellTreeTest implements EntryPoint {
 
 	public void onModuleLoad() {
 		final SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree = new SingleSelectionModel<UpdatableTreeNode>();
-		final UpdatableTreeModel treeModel = new UpdatableTreeModel(selectionModelCellTree);
+		ValueUpdater<UpdatableTreeNode> valueUpdater = new ValueUpdater<UpdatableTreeNode>() {
+			public void update(UpdatableTreeNode changedNode) {
+				System.out.println("new value:" + changedNode.getLabel());
+			}
+		};
+		final UpdatableTreeModel treeModel = new UpdatableTreeModel(selectionModelCellTree,valueUpdater,40);
 
 		CellTree cellTree = new CellTree(treeModel, null);
 		treeModel.setCellTree(cellTree);

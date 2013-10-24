@@ -34,5 +34,7 @@ public interface UpdatableTreeNode {
 
 	public String getLabel();
 
+	public void setLabel(String label);
+
 	public ListDataProvider<UpdatableTreeNode> getDataProvider();
 }

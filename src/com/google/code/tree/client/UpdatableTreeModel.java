@@ -18,9 +18,8 @@ package com.google.code.tree.client;
 
 import java.util.ArrayList;
 
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.view.client.ListDataProvider;
@@ -29,12 +28,24 @@ import com.google.gwt.view.client.TreeViewModel;
 
 public class UpdatableTreeModel implements TreeViewModel {
 
+	ValueUpdater<UpdatableTreeNode> valueUpdater = null;
 	SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree = null;
 	ListDataProvider<UpdatableTreeNode> rootDataProvider = null;
+	int inputBoxSize;
 	CellTree tree;
 
 	public UpdatableTreeModel(SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree) {
+		this(selectionModelCellTree, null, 20);
+	}
+
+	public UpdatableTreeModel(SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree, ValueUpdater<UpdatableTreeNode> valueUpdater) {
+		this(selectionModelCellTree, valueUpdater, 20);
+	}
+
+	public UpdatableTreeModel(SingleSelectionModel<UpdatableTreeNode> selectionModelCellTree, ValueUpdater<UpdatableTreeNode> valueUpdater, int inputBoxSize) {
 		this.selectionModelCellTree = selectionModelCellTree;
+		this.valueUpdater = valueUpdater;
+		this.inputBoxSize = inputBoxSize;
 		this.rootDataProvider = new ListDataProvider<UpdatableTreeNode>(new ArrayList<UpdatableTreeNode>());
 	}
 
@@ -114,20 +125,11 @@ public class UpdatableTreeModel implements TreeViewModel {
 
 	@Override
 	public <T> NodeInfo<?> getNodeInfo(T value) {
-
-		Cell<UpdatableTreeNode> cell = new AbstractCell<UpdatableTreeNode>() {
-			@Override
-			public void render(Context context, UpdatableTreeNode value, SafeHtmlBuilder sb) {
-				if (value != null) {
-					sb.appendEscaped(value.getLabel());
-				}
-			}
-		};
-
+		Cell<UpdatableTreeNode> cell = new CustomEditTextCell();
 		if (value == null) { // root is not set
-			return new DefaultNodeInfo<UpdatableTreeNode>(rootDataProvider, cell, selectionModelCellTree, null);
+			return new DefaultNodeInfo<UpdatableTreeNode>(rootDataProvider, cell, selectionModelCellTree, valueUpdater);
 		} else {
-			return new DefaultNodeInfo<UpdatableTreeNode>(((UpdatableTreeNode) value).getDataProvider(), cell, selectionModelCellTree, null);
+			return new DefaultNodeInfo<UpdatableTreeNode>(((UpdatableTreeNode) value).getDataProvider(), cell, selectionModelCellTree, valueUpdater);
 		}
 	}
 
